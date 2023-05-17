@@ -1,6 +1,6 @@
 #!/bin/sh
 
-$ echo Running quickGrade!
+$ echo Running quickGrade\!
 
 # for each test case in data,
 # 1. Save input of test case as a bash variable
