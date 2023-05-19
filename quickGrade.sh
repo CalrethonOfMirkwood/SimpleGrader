@@ -1,14 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 
-$ echo Running quickGrade\!
+echo "Running quickGrade!"
 
 # for each test case in data,
 # 1. Save input of test case as a bash variable
 
-data=()
+files=()
 dir=./data
 for f in "$dir"/*.in; do
-    data+=("$f")
+    files+=("$f")
 done
 
 code=()
