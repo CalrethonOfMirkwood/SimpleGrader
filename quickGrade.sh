@@ -32,23 +32,24 @@ done
 
 echo "Running student code..."
 for (( i=0; i<${#files[@]}; i=$i+2 ))
-    do
+do
     result=""
 
     input="${#files[i]}"
     output="${#files[i+1]}"
 
     for (( j=0; j<$len; j++ ))
-        stuOut="$(java -cp ${#sCode[j]})"
+        do
+        stuOut="$(echo $input| java -cp ${#files[i]} 2>&1 )"
         
         if [ "$output" == "$stuOut" ]; then
-            result+="P "
+            result="$result"+"P "
         else
-            result+="F "
+            result="$result"+"F "
         fi
-    done
+        done
 
-    echo $result >> temp.txt
+    echo "$result" >> temp.txt
     unset result
 done
 
