@@ -5,55 +5,49 @@ echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
 time=$(date)
 
-
 echo "Creating temp file..."
-len=${#sCode[@]}
 touch temp.txt
+# 1st line of temp.txt is time
 echo $time >> temp.txt
 
 
 echo "Getting data..."
-files=()
-data=./data
-for f in "$data"/*.in; do
-    files+=("$f")
-done
-echo ${#files[@]} >> temp.txt
+dFiles=(data/*)
+# 2nd line of temp.txt is number of test cases
+echo ${#dFiles[@]} >> temp.txt
 
 
 echo "Getting student code..."
-data=()
-dir=./studentCode
-for f in "$dir"/*; do
-    sCode+=("$f")
-    echo ${f%".java"} >> temp.txt
-done
+sFiles=(studentCode/*)
+# 3rd line of temp.txt is number of students
+len=${#sFiles[@]}
+echo $len >> temp.txt
 
 
 echo "Running student code..."
-for (( i=0; i<${#files[@]}; i=$i+2 ))
-do
+for (( i=0; i<${#dFiles[@]}; i=$i+2 )) do
     result=""
+    
+    input=$(cat "${dFiles[i]}")
+    output=$(cat "${dFiles[i+1]}")
 
-    input="${#files[i]}"
-    output="${#files[i+1]}"
+    echo "input"+$input
+    echo "output"+$output
 
-    for (( j=0; j<$len; j++ ))
-        do
-        stuOut="$(echo $input| java -cp ${#files[i]} 2>&1 )"
-        
-        if [ "$output" == "$stuOut" ]; then
-            result="$result"+"P "
+    for (( j=0; j<$len; j++ )) do
+        stuOut="$( echo $input | java ${sFiles[j]}) "
+
+        if [ $output == $stuOut ]; then
+            result=$result+"P "
         else
-            result="$result"+"F "
+            result=$result+"F "
         fi
-        done
+    done
 
-    echo "$result" >> temp.txt
-    unset result
+    # each line is results for one test case
+    echo $result >> temp.txt
 done
 
 
-
 echo "Creating output file..."
-cp -v .config/template.html "$time".html
+#cp -v .config/template.html "$time".html
