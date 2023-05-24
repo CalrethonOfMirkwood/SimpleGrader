@@ -1,24 +1,58 @@
 #!/bin/bash
 
 echo "Running quickGrade!"
+echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 
-# for each test case in data,
-# 1. Save input of test case as a bash variable
+time=$(date)
 
+
+echo "Creating temp file..."
+len=${#sCode[@]}
+touch temp.txt
+echo $time >> temp.txt
+
+
+echo "Getting data..."
 files=()
-dir=./data
-for f in "$dir"/*.in; do
+data=./data
+for f in "$data"/*.in; do
     files+=("$f")
 done
+echo ${#files[@]} >> temp.txt
 
-code=()
+
+echo "Getting student code..."
+data=()
 dir=./studentCode
 for f in "$dir"/*; do
-    code+=("$f")
+    sCode+=("$f")
+    echo ${f%".java"} >> temp.txt
 done
 
-# then run it for every file in studentCode:
-# 2. Run the code with input
-# 3. Save the output of student code as a bash variable
-# 4. Compare actual output to expected output
-# 5. Update XML table
+
+echo "Running student code..."
+for (( i=0; i<${#files[@]}; i=$i+2 ))
+    do
+    result=""
+
+    input="${#files[i]}"
+    output="${#files[i+1]}"
+
+    for (( j=0; j<$len; j++ ))
+        stuOut="$(java -cp ${#sCode[j]})"
+        
+        if [ "$output" == "$stuOut" ]; then
+            result+="P "
+        else
+            result+="F "
+        fi
+    done
+
+    echo $result >> temp.txt
+    unset result
+done
+
+
+
+echo "Creating output file..."
+cp -v .config/template.html "$time".html
