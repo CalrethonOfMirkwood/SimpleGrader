@@ -7,19 +7,19 @@ time=$(date)
 
 echo "Creating temp file..."
 touch temp.txt
-# 1st line of temp.txt is time
+# line 0 of temp.txt is time
 echo $time >> temp.txt
 
 
 echo "Getting data..."
 dFiles=(data/*)
-# 2nd line of temp.txt is number of test cases
-echo ${#dFiles[@]} >> temp.txt
+# line 1 of temp.txt is number of test cases
+echo $(expr ${#dFiles[@]} / 2) >> temp.txt
 
 
 echo "Getting student code..."
 sFiles=(studentCode/*)
-# 3rd line of temp.txt is number of students
+# line 2 of temp.txt is number of students
 len=${#sFiles[@]}
 echo $len >> temp.txt
 
@@ -39,16 +39,22 @@ for (( i=0; i<${#dFiles[@]}; i=$i+2 )) do
 
         # update to read each line
         if [ "$output" == "$stuOut" ]; then
-            result="$result P"
+            result="$result"P
         else
-            result="$result F"
+            result="$result"X
         fi
     done
 
     # each line is results for one test case
-    echo $result >> temp.txt
+    echo ${sFiles[j]} >> temp.txt
+done
+
+
+for f in "$dir"/*; do
+    sCode+=("$f")
+    echo ${f%".java"} >> temp.txt
 done
 
 
 echo "Creating output file..."
-#cp -v .config/template.html "$time".html
+cp -v .config/template.html "$time".html
