@@ -35,12 +35,13 @@ for (( i=0; i<${#dFiles[@]}; i=$i+2 )) do
     echo "output"+$output
 
     for (( j=0; j<$len; j++ )) do
-        stuOut="$( echo $input | java ${sFiles[j]}) "
+        stuOut=$(echo $input | java ${sFiles[j]})
 
-        if [ $output == $stuOut ]; then
-            result=$result+"P "
+        # update to read each line
+        if [ "$output" == "$stuOut" ]; then
+            result="$result P"
         else
-            result=$result+"F "
+            result="$result F"
         fi
     done
 
