@@ -3,70 +3,95 @@
 <html>
     <head>
         <title id="title">Grading output</title>
+        <script src='.config/sql.js'></script>
     </head>
 
 
-    <body>
-        <div id="table-container"></div>
-    </body>
+    <table>
+    </table>
+
+    <script>
+    window.onload = function(e){
+        // change title of document
+        console.log("changing title");
+        var pathn = window.location.pathname;
+        var time = pathn.substring(pathn.lastIndexOf('/') + 1, pathn.lastIndexOf('.html'));
+        document.getElementById('title') = "Grading output on "+time;
 
 
-    <script type="text/javascript">
-        fs.readFile('temp.txt', (err, data) => {
-            if (err) throw err;
-            
-            var lines = data.toString().split('\n');
+        // get data from database
+        console.log("getting data");
+        var db = openDatabase('grading.db');
 
-            // change title of document
-            document.getElementById('title') = "Grading output on "+lines[0]
-            
-            var cases = lines[1];
-            var students = lines[2]
+        console.log("making arrays");
+        var names = [];
+        var grading = [];
 
-            const a = [];
-            for (let i=0; i<students; i++) {
-                a[i] = lines[3+cases+i];
-                for (let j=0; j<cases; j++) {
-                    a[i][j] = line[3+j].charAt(j);
-                }
+        console.log("reading database");
+        tx.executeSql('SELECT * FROM '+time+'', [], function (tx, results) {
+            console.log("sus");
+            var len = results.rows.length, i;
+            console.log("amogus");
+            for (i = 0; i < len; i++) {
+                names[i] = results.rows.item(i).name;
+                grading[i] = results.rows.item(i).result;
             }
+        });
+        const students = names[i].length;
+        const cases = grading[i].length;
 
-            // create table
-            const table = document.createElement('table');
-            const headerRow = document.createElement('tr');
-            
-            // create header column for names
-            const headerCell = document.createElement('th');
-            headerCell.textContent = "Name";
-            headerRow.appendChild(headerCell);
 
-            // create header column(s) for test cases
-            for (let i=0; i<cases; i++) {
-                const headerCell = document.createElement('th');
-                headerCell.textContent = "TC "+(i+1);
-                headerRow.appendChild(headerCell);
+        // GENERATE TABLE HEAD
+        let table = document.querySelector("table");
+        let thead = table.createTHead();
+        let headerRow = thead.insertRow();
+
+        // name
+        let th = document.createElement("th");
+        let text = document.createTextNode("Name");
+        th.appendChild(text);
+        headerRow.appendChild(th);
+
+        // total score
+        th = document.createElement("th");
+        text = document.createTextNode("Total");
+        th.appendChild(text);
+        headerRow.appendChild(th);
+
+        // test cases
+        for (i=0; i<cases; i++) {
+            th = document.createElement("th");
+            text = document.createTextNode("TC"+(i+1));
+            th.appendChild(text);
+            headerRow.appendChild(th);
+        }
+
+
+        // INSERT DATA
+        for (i=0; i<students; i++) {
+            let row = table.insertRow();
+
+            // student's name
+            let nameCell = row.insertCell();
+            let nameText = document.createTextNode(names[i]);
+            nameCell.appendChild(nameText);
+
+            // total score
+            var s = grading[i];
+            var score = 0;
+            for (j=0; j<cases; j++) { if (s.charAt(j) == 'P') {score++;} }
+            let scoreCell = row.insertCell();
+            let scoreText = document.createTextNode(score+"/"+cases);
+            cell.appendChild(text);
+
+            // test case grading
+            for (j=0; j<cases; j++) {
+                let cell = row.insertCell();
+                let text = document.createTextNode(s.charAt(j));
+                cell.appendChild(text);
             }
-            table.appendChild(headerRow);
-
-            // fill in data
-            for (let i=0; i<students; i++) {
-                const dataRow = document.createElement('tr');
-                const dataCell = document.createElement('td');
-                dataCell.textContent = a[i][0];
-                dataRow.appendChild(dataCell);
-
-
-                for (let j=0; j<cases; j++) {
-                    const dataCell = document.createElement('td');
-                    dataCell.textContent = a[i][j+1];
-                    dataRow.appendChild(dataCell);
-                }
-                table.appendChild(dataRow);
-            }
-            
-            // push table to html
-            const tableContainer = document.getElementById('table-container');
-            tableContainer.appendChild(table);
-        })
+        }
+    }
     </script>
+
 </html>
