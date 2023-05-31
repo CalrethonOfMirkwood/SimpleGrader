@@ -30,6 +30,7 @@ for (( i=0; i<$len; i++ )) do
     result=""
     score=0
 
+    echo "Running ${sFiles[i]}'s code..."
     for (( j=0; j<$cases; j++ )) do
         input=$(cat "${dFiles[i*2]}")
         output=$(cat "${dFiles[i*2+1]}")
