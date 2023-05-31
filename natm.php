@@ -3,30 +3,34 @@
 <html>
     <head>
         <title id="title">NATM SIMPLEGRADER DEMONSTRATION</title>
+        <link rel="stylesheet" type="text/css" href="./css/table.css" />
+        <script type="text/javascript" src="./css/sorta.js"></script>
     </head>
 
     <body>
   
     <h1>NATM SIMPLEGRADER DEMONSTRATION</h1>
 
-    <p>Your task is simple.  Write a java program where, given three side lengths of a possible triangle, you must determine whether or not the triangle is valid.</br>
-    Print "true" if valid triangle and "false" if invalid triangle.
-    </p>
-    
-    </br>
+    <div>
+        <p>Your task is simple.  Write a java program where, given three side lengths of a possible triangle, you must determine whether or not the triangle is valid.</br>
+        Print "true" if valid triangle and "false" if invalid triangle.
+        </p>
+    </div>
 
-    <p>For example: </br>
+    <div>
+        <p>For example: </br>
 
-    <strong>INPUT:</strong></br>
-    3 2 4</br>
+        <strong>INPUT:</strong></br>
+        3 2 4</br>
 
-    <strong>OUTPUT:</strong></br>
-    false
-    </p>
+        <strong>OUTPUT:</strong></br>
+        false
+        </p>
+    </div>
 
     <h2><strong><em>Are you up for the challenge?</em></strong></h2>
 
-
+    <div class="table-wrapper">
     <h3>Scoreboard:</h3>
 
     <?php
@@ -34,7 +38,7 @@
         $query = $db->query('SELECT * FROM wow');
         
         $firstRow = true;
-        echo '<div class="table-responsive"><table class="table">';
+        echo '<table class="fl-table" id="sorttable">';
         while ($row = $query->fetchArray(SQLITE3_ASSOC)) {
             if ($firstRow) {
                 echo '<thead><tr>';
@@ -53,9 +57,14 @@
             echo '</tr>';
         }
         echo '</tbody>';
-        echo '</table></div>';
+        echo '</table>';
+        echo '</div>';
 
     ?>
+
+    <script>
+        sorta(document.getElementById("sorttable"));
+    </script>
 
     </body>
 
